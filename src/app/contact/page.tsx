@@ -1,0 +1,373 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+    MapPin,
+    Phone,
+    Mail,
+    Clock,
+    Send,
+    Loader2,
+    MessageSquare,
+    Globe,
+    ChevronDown,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { fadeInUp, fadeInLeft, fadeInRight } from "@/lib/animations";
+
+const locations = [
+    {
+        city: "Lagos, Nigeria",
+        address: "Murtala Muhammed International Airport, Ikeja",
+        phone: "+234 1 279 9999",
+        email: "lagos@cargofly.com",
+        hours: "24/7 Operations",
+    },
+    {
+        city: "London, UK",
+        address: "Heathrow Cargo Centre, Hounslow",
+        phone: "+44 20 8759 1234",
+        email: "london@cargofly.com",
+        hours: "08:00 - 20:00 GMT",
+    },
+    {
+        city: "Dubai, UAE",
+        address: "Dubai Logistics City, DWC",
+        phone: "+971 4 887 1234",
+        email: "dubai@cargofly.com",
+        hours: "24/7 Operations",
+    },
+];
+
+const faqs = [
+    {
+        element: "faq-1",
+        question: "How do I track my shipment?",
+        answer:
+            "You can track your shipment using the 12-digit tracking number provided in your booking confirmation. Enter it on our homepage or tracking page for real-time updates.",
+    },
+    {
+        element: "faq-2",
+        question: "What are your prohibited items?",
+        answer:
+            "We adhere to IATA Dangerous Goods Regulations. Prohibited items include explosives, radioactive materials, and certain flammable substances. Please contact us for a detailed list.",
+    },
+    {
+        element: "faq-3",
+        question: "Do you offer insurance?",
+        answer:
+            "Yes, all shipments are automatically insured up to $100. Additional comprehensive insurance coverage is available for high-value items at competitive rates.",
+    },
+];
+
+export default function ContactPage() {
+    const [activeFaq, setActiveFaq] = useState<string | null>(null);
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        subject: "general",
+        message: "",
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+
+        setIsSubmitting(false);
+        setIsSuccess(true);
+        setFormData({ name: "", email: "", subject: "general", message: "" });
+        setTimeout(() => setIsSuccess(false), 5000);
+    };
+
+    return (
+        <div className="min-h-screen pt-32 pb-24 bg-navy-900">
+            {/* Background */}
+            <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-navy-800 via-navy-900 to-black" />
+            <div className="fixed inset-0 z-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+
+            <div className="container mx-auto px-6 relative z-10">
+                {/* Header */}
+                <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    variants={fadeInUp}
+                    className="text-center mb-16"
+                >
+                    <span className="inline-block py-1 px-3 rounded-full bg-gold-500/10 text-gold-400 text-xs font-bold tracking-[0.2em] uppercase mb-6 font-body">
+                        Contact Us
+                    </span>
+                    <h1 className="font-display text-4xl md:text-5xl text-white mb-4">
+                        Get in
+                        <span className="block italic text-white/80">Touch</span>
+                    </h1>
+                    <p className="text-white/60 max-w-xl mx-auto font-body">
+                        Our dedicated team is here to assist you 24/7. Reach out for quotes,
+                        support, or general inquiries.
+                    </p>
+                </motion.div>
+
+                <div className="grid lg:grid-cols-2 gap-16 mb-24">
+                    {/* Contact Form */}
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={fadeInLeft}
+                    >
+                        <div className="glass-panel p-8 md:p-10">
+                            <h2 className="font-display text-2xl text-white mb-6">
+                                Send us a message
+                            </h2>
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className="block text-sm text-white/40 mb-2 font-body uppercase tracking-wider">
+                                            Your Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.name}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, name: e.target.value })
+                                            }
+                                            placeholder="John Doe"
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-body"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm text-white/40 mb-2 font-body uppercase tracking-wider">
+                                            Email Address
+                                        </label>
+                                        <input
+                                            type="email"
+                                            required
+                                            value={formData.email}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, email: e.target.value })
+                                            }
+                                            placeholder="john@example.com"
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-body"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm text-white/40 mb-2 font-body uppercase tracking-wider">
+                                        Subject
+                                    </label>
+                                    <select
+                                        value={formData.subject}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, subject: e.target.value })
+                                        }
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 text-white focus:outline-none focus:border-gold-500/50 transition-all font-body appearance-none cursor-pointer"
+                                    >
+                                        <option value="general">General Inquiry</option>
+                                        <option value="quote">Request a Quote</option>
+                                        <option value="support">Shipment Support</option>
+                                        <option value="careers">Careers</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm text-white/40 mb-2 font-body uppercase tracking-wider">
+                                        Message
+                                    </label>
+                                    <textarea
+                                        required
+                                        rows={5}
+                                        value={formData.message}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, message: e.target.value })
+                                        }
+                                        placeholder="How can we help you today?"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-body resize-none"
+                                    />
+                                </div>
+
+                                <motion.button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    whileHover={{ y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    className={cn(
+                                        "w-full py-4 rounded-xl bg-gradient-to-r from-gold-500 to-amber-400 text-navy-900 font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2",
+                                        isSubmitting
+                                            ? "opacity-70 cursor-not-allowed"
+                                            : "hover:shadow-[0_0_30px_rgba(202,138,4,0.3)]"
+                                    )}
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <Loader2 className="w-5 h-5 animate-spin" />
+                                            Sending...
+                                        </>
+                                    ) : isSuccess ? (
+                                        <>
+                                            <div className="w-5 h-5 bg-navy-900 rounded-full flex items-center justify-center">
+                                                <Check className="w-3 h-3 text-gold-500" />
+                                            </div>
+                                            Message Sent!
+                                        </>
+                                    ) : (
+                                        <>
+                                            Send Message
+                                            <Send className="w-4 h-4" />
+                                        </>
+                                    )}
+                                </motion.button>
+                            </form>
+                        </div>
+                    </motion.div>
+
+                    {/* Contact Info & Locations */}
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={fadeInRight}
+                        className="space-y-8"
+                    >
+                        <div className="grid sm:grid-cols-2 gap-4">
+                            <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                                <div className="w-12 h-12 rounded-xl bg-gold-500/20 flex items-center justify-center mb-4">
+                                    <Phone className="w-5 h-5 text-gold-400" />
+                                </div>
+                                <h3 className="font-display text-lg text-white mb-1">
+                                    Call Us
+                                </h3>
+                                <p className="text-white/60 text-sm font-body">
+                                    +234 1 279 9999
+                                </p>
+                                <p className="text-white/40 text-xs mt-1 font-body">
+                                    Mon-Fri, 8am-6pm WAT
+                                </p>
+                            </div>
+                            <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                                <div className="w-12 h-12 rounded-xl bg-gold-500/20 flex items-center justify-center mb-4">
+                                    <Mail className="w-5 h-5 text-gold-400" />
+                                </div>
+                                <h3 className="font-display text-lg text-white mb-1">
+                                    Email Us
+                                </h3>
+                                <p className="text-white/60 text-sm font-body">
+                                    concierge@cargofly.com
+                                </p>
+                                <p className="text-white/40 text-xs mt-1 font-body">
+                                    Response within 2 hours
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="glass-panel p-8">
+                            <div className="flex items-center gap-3 mb-6">
+                                <Globe className="w-5 h-5 text-gold-400" />
+                                <h3 className="font-display text-xl text-white">
+                                    Our Global Hubs
+                                </h3>
+                            </div>
+                            <div className="space-y-6">
+                                {locations.map((location, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex gap-4 pb-6 last:pb-0 border-b border-white/10 last:border-0"
+                                    >
+                                        <div className="mt-1">
+                                            <MapPin className="w-5 h-5 text-white/30" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-display text-lg text-white mb-1">
+                                                {location.city}
+                                            </h4>
+                                            <p className="text-white/60 text-sm font-body mb-2">
+                                                {location.address}
+                                            </p>
+                                            <div className="flex flex-wrap gap-4 text-xs text-white/40 font-body">
+                                                <span className="flex items-center gap-1">
+                                                    <Phone className="w-3 h-3" />
+                                                    {location.phone}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Mail className="w-3 h-3" />
+                                                    {location.email}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Clock className="w-3 h-3" />
+                                                    {location.hours}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* FAQ Section */}
+                <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={fadeInUp}
+                    className="max-w-3xl mx-auto"
+                >
+                    <div className="text-center mb-12">
+                        <h2 className="font-display text-3xl text-white mb-4">
+                            Frequently Asked Questions
+                        </h2>
+                        <p className="text-white/60 font-body">
+                            Common questions about our services and shipping process.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        {faqs.map((faq, index) => (
+                            <div
+                                key={index}
+                                className="glass-panel overflow-hidden transition-all duration-300"
+                            >
+                                <button
+                                    onClick={() =>
+                                        setActiveFaq(activeFaq === faq.element ? null : faq.element)
+                                    }
+                                    className="w-full flex items-center justify-between p-6 text-left"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                                            <MessageSquare className="w-4 h-4 text-gold-400" />
+                                        </div>
+                                        <span className="font-display text-lg text-white">
+                                            {faq.question}
+                                        </span>
+                                    </div>
+                                    <ChevronDown
+                                        className={cn(
+                                            "w-5 h-5 text-white/40 transition-transform duration-300",
+                                            activeFaq === faq.element ? "rotate-180" : ""
+                                        )}
+                                    />
+                                </button>
+                                <div
+                                    className={cn(
+                                        "px-6 transition-all duration-300 overflow-hidden font-body text-white/60 leading-relaxed",
+                                        activeFaq === faq.element
+                                            ? "max-h-40 pb-6 opacity-100"
+                                            : "max-h-0 opacity-0"
+                                    )}
+                                >
+                                    <p className="pl-12">{faq.answer}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </motion.div>
+            </div>
+        </div>
+    );
+}
