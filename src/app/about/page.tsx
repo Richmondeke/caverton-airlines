@@ -115,8 +115,8 @@ export default function AboutPage() {
                             className="relative aspect-square lg:aspect-auto lg:h-[600px] rounded-3xl overflow-hidden"
                         >
                             <Image
-                                src="https://images.unsplash.com/photo-1570710891163-6d3b5c47248b?q=80&w=2070"
-                                alt="Caverton Cargo Aircraft"
+                                src="/images/aircraft-loading.png"
+                                alt="Caverton Cargo Aircraft Loading"
                                 fill
                                 className="object-cover"
                             />

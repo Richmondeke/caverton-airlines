@@ -23,7 +23,7 @@ const testimonials: Testimonial[] = [
         name: "Adebayo Ogunlesi",
         role: "CEO",
         company: "Lagos Textiles Ltd",
-        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200",
+        image: "/images/testimonial-1.png",
         content:
             "Cargofly transformed our export operations. The speed and reliability of their air freight service has helped us expand into new markets across Europe. Truly premium service.",
         rating: 5,
@@ -33,7 +33,7 @@ const testimonials: Testimonial[] = [
         name: "Amara Diallo",
         role: "Supply Chain Director",
         company: "West Africa Pharma",
-        image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200",
+        image: "/images/testimonial-2.png",
         content:
             "When it comes to temperature-sensitive pharmaceutical shipments, we trust only Cargofly. Their real-time tracking and handling procedures are exactly what our industry demands.",
         rating: 5,
@@ -43,7 +43,7 @@ const testimonials: Testimonial[] = [
         name: "Emmanuel Okonkwo",
         role: "Managing Director",
         company: "Continental Oil & Gas",
-        image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200",
+        image: "/images/testimonial-3.png",
         content:
             "The white-glove service and attention to detail sets Cargofly apart. For critical equipment shipments to our offshore operations, they deliver every time without fail.",
         rating: 5,
@@ -53,7 +53,7 @@ const testimonials: Testimonial[] = [
         name: "Fatima Hassan",
         role: "Founder",
         company: "Abuja Fashion House",
-        image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200",
+        image: "/images/testimonial-4.png",
         content:
             "As a luxury fashion brand, presentation matters. Cargofly understands this. Our garments arrive to international buyers in perfect condition, every single time.",
         rating: 5,

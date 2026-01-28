@@ -12,6 +12,7 @@ import {
     MessageSquare,
     Globe,
     ChevronDown,
+    Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fadeInUp, fadeInLeft, fadeInRight } from "@/lib/animations";

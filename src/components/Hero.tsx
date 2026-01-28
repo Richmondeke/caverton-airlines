@@ -44,8 +44,8 @@ export default function Hero() {
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070"
-                    alt="Cargo plane loading"
+                    src="/images/hero-aircraft.png"
+                    alt="Caverton cargo aircraft at sunset"
                     fill
                     className="object-cover opacity-20"
                     priority

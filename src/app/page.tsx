@@ -218,7 +218,7 @@ export default function Home() {
       <section className="relative py-32 bg-navy-900 overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=2070"
+            src="/images/cargo-hangar.png"
             alt="Cargo operations"
             fill
             className="object-cover opacity-10"
@@ -299,7 +299,7 @@ export default function Home() {
             >
               <div className="relative h-[600px] rounded-3xl overflow-hidden">
                 <Image
-                  src="https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?q=80&w=1965"
+                  src="/images/ground-crew.png"
                   alt="Premium cargo operations"
                   fill
                   className="object-cover"
