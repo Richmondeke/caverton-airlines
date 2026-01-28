@@ -14,15 +14,22 @@ import {
     Info,
 } from "lucide-react";
 import TrackingWidget from "@/components/TrackingWidget";
-import TrackingTimeline from "@/components/TrackingTimeline";
+import TrackingTimeline, { TrackingEvent as UITrackingEvent } from "@/components/TrackingTimeline";
 import { cn } from "@/lib/utils";
-import { getShipmentByTracking, getTrackingEvents, Shipment, TrackingEvent } from "@/lib/firestore";
+import {
+    getShipmentByTracking,
+    getTrackingEvents,
+    Shipment,
+    TrackingEvent as DBTrackingEvent,
+    getStatusDisplay,
+    formatTimestamp
+} from "@/lib/firestore";
 
 function TrackPageContent() {
     const searchParams = useSearchParams();
     const [trackingId, setTrackingId] = useState<string | null>(null);
     const [shipment, setShipment] = useState<Shipment | null>(null);
-    const [events, setEvents] = useState<TrackingEvent[]>([]);
+    const [events, setEvents] = useState<UITrackingEvent[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [copied, setCopied] = useState(false);
@@ -46,7 +53,18 @@ function TrackPageContent() {
 
                 if (shipHelper) {
                     setShipment(shipHelper);
-                    setEvents(eventsHelper);
+                    // Convert Firestore events to UI events
+                    // Firestore returns Descending (Newest First). 
+                    // We reverse to show Chronological (Oldest First) to match Timeline flow.
+                    const flowEvents = eventsHelper.reverse().map((e: any) => ({
+                        id: e.id,
+                        status: getStatusDisplay(e.status) || e.status,
+                        location: e.location,
+                        timestamp: formatTimestamp(e.timestamp),
+                        description: e.description,
+                        isCompleted: true // Past events are completed
+                    }));
+                    setEvents(flowEvents);
                 } else {
                     setError("Shipment not found. Please check the tracking number.");
                     setShipment(null);
@@ -88,7 +106,7 @@ function TrackPageContent() {
 
     const formatDate = (timestamp: any) => {
         if (!timestamp) return "Pending";
-        // Handle Firestore Timestamp
+        // Handle Firestore Timestamp or Date
         const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
         return new Intl.DateTimeFormat('en-US', {
             weekday: 'short',
@@ -260,7 +278,10 @@ function TrackPageContent() {
                             </div>
 
                             {/* Timeline */}
-                            <TrackingTimeline events={events} />
+                            <TrackingTimeline
+                                events={events}
+                                currentStatus={getStatusDisplay(shipment.status as any) || shipment.status}
+                            />
                         </div>
 
                         {/* Shipment Details Sidebar */}
