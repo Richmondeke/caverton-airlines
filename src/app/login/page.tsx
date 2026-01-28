@@ -6,7 +6,10 @@ import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useAuth } from "@/contexts/AuthContext";
+
 export default function LoginPage() {
+    const { signIn, signInWithGoogle } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -19,18 +22,18 @@ export default function LoginPage() {
         setError("");
         setIsLoading(true);
 
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        // Demo validation
-        if (email === "demo@cargofly.com" && password === "demo123") {
-            window.location.href = "/";
-        } else {
-            setError("Invalid email or password. Try demo@cargofly.com / demo123");
+        try {
+            await signIn(email, password);
+            // Redirect handled by auth state
+            window.location.href = "/ship";
+        } catch (err: any) {
+            console.error("Login error:", err);
+            setError("Invalid email or password. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     };
+
 
     return (
         <div className="min-h-screen flex items-center justify-center py-24 px-6 bg-navy-900">
@@ -196,7 +199,11 @@ export default function LoginPage() {
 
                     {/* Social Login */}
                     <div className="grid grid-cols-2 gap-4">
-                        <button className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/20 transition-all font-body">
+                        <button
+                            type="button"
+                            onClick={signInWithGoogle}
+                            className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/20 transition-all font-body"
+                        >
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
                                 <path
                                     fill="currentColor"
