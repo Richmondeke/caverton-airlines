@@ -25,7 +25,7 @@ export default function DemoPage() {
 
     const generateDemoData = async () => {
         setIsLoading(true);
-        const newShipments = [];
+        const newShipments: any[] = [];
 
         try {
             // Generate 3 shipments with different statuses
