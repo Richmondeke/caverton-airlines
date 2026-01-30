@@ -48,15 +48,19 @@ function TrackPageContent() {
             setLoading(true);
             setError("");
             try {
-                const shipHelper = await getShipmentByTracking(trackingId);
-                const eventsHelper = await getTrackingEvents(trackingId);
+                // 1. Get Shipment First
+                const shipmentData = await getShipmentByTracking(trackingId);
 
-                if (shipHelper) {
-                    setShipment(shipHelper);
+                if (shipmentData && shipmentData.id) {
+                    // 2. Then Get Events using the Document ID
+                    const eventsData = await getTrackingEvents(shipmentData.id);
+
+                    setShipment(shipmentData);
+
                     // Convert Firestore events to UI events
                     // Firestore returns Descending (Newest First). 
                     // We reverse to show Chronological (Oldest First) to match Timeline flow.
-                    const flowEvents = eventsHelper.reverse().map((e: any) => ({
+                    const flowEvents = eventsData.reverse().map((e: any) => ({
                         id: e.id,
                         status: getStatusDisplay(e.status) || e.status,
                         location: e.location,
