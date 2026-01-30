@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { generateTrackingNumber, createShipment, Shipment, ShipmentStatus } from "@/lib/firestore";
 import { Timestamp } from "firebase/firestore";
+import { useAuth } from "@/contexts/AuthContext";
 
 const DEMO_LOCATIONS = [
     { city: "Lagos", country: "Nigeria" },
@@ -23,12 +24,19 @@ export default function DemoPage() {
     const { user } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [createdShipments, setCreatedShipments] = useState<any[]>([]);
+    const [logs, setLogs] = useState<string[]>([]);
+
+    const addLog = (msg: string) => setLogs(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev]);
 
     const generateDemoData = async () => {
+        addLog("Starting demo generation...");
         if (!user) {
-            alert("Please log in first to generate demo data.");
+            const msg = "Error: User is not logged in. Please sign in.";
+            addLog(msg);
+            alert(msg);
             return;
         }
+        addLog(`User found: ${user.uid}`);
 
         setIsLoading(true);
         const newShipments: any[] = [];
@@ -36,6 +44,7 @@ export default function DemoPage() {
         try {
             // Generate 3 shipments with different statuses
             for (let i = 0; i < 3; i++) {
+                addLog(`Generating shipment ${i + 1}/3...`);
                 const now = new Date();
                 const estimated = new Date();
                 estimated.setDate(now.getDate() + 3);
@@ -84,6 +93,7 @@ export default function DemoPage() {
                 };
 
                 const trackingNumber = await createShipment(shipmentData);
+                addLog(`Created shipment: ${trackingNumber}`);
                 // Manually update status for demo purposes since createShipment defaults to pending
                 // In a real app, this would be separate calls, but for demo speed we might just want 'pending' 
                 // or we'd need to call updateShipmentStatus. 
@@ -96,9 +106,12 @@ export default function DemoPage() {
             }
 
             setCreatedShipments(prev => [...prev, ...newShipments]);
+            addLog("Success: 3 shipments generated!");
         } catch (error: any) {
+            const errMsg = error.message || JSON.stringify(error);
             console.error("Error generating demo data:", error);
-            alert(`Failed to generate demo data: ${error.message || error}`);
+            addLog(`ERROR: ${errMsg}`);
+            alert(`Failed to generate: ${errMsg}`);
         } finally {
             setIsLoading(false);
         }
@@ -109,6 +122,10 @@ export default function DemoPage() {
             <div className="max-w-2xl mx-auto">
                 <h1 className="text-3xl font-display mb-8">Demo Data Generator</h1>
 
+                <div className="mb-4">
+                    <p className="text-sm text-white/60 mb-2">User Status: {user ? "Logged In ✅" : "Not Logged In ❌"}</p>
+                </div>
+
                 <button
                     onClick={generateDemoData}
                     disabled={isLoading}
@@ -116,6 +133,17 @@ export default function DemoPage() {
                 >
                     {isLoading ? "Generating..." : "Generate 3 Demo Shipments"}
                 </button>
+
+                {/* Logs Section */}
+                {logs.length > 0 && (
+                    <div className="mb-8 p-4 bg-black/30 rounded-xl font-mono text-xs max-h-40 overflow-y-auto border border-white/10">
+                        {logs.map((log, i) => (
+                            <div key={i} className={log.includes("ERROR") ? "text-red-400" : "text-white/70"}>
+                                {log}
+                            </div>
+                        ))}
+                    </div>
+                )}
 
                 <div className="space-y-4">
                     {createdShipments.map((shipment, index) => (
