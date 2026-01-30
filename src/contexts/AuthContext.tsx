@@ -27,6 +27,7 @@ interface UserProfile {
     phone?: string;
     company?: string;
     role: "customer" | "admin" | "staff";
+    walletBalance: number;
 }
 
 interface AuthContextType {
@@ -57,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 email: user.email || "",
                 displayName: displayName || user.displayName || "User",
                 role: "customer",
+                walletBalance: 0,
             };
 
             await setDoc(userRef, {

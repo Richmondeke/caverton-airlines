@@ -2,13 +2,15 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface AnimatedCounterProps {
     value: number;
     suffix?: string;
     prefix?: string;
-    label: string;
+    label?: string;
     duration?: number;
+    className?: string;
 }
 
 export default function AnimatedCounter({
@@ -17,6 +19,7 @@ export default function AnimatedCounter({
     prefix = "",
     label,
     duration = 2,
+    className,
 }: AnimatedCounterProps) {
     const [count, setCount] = useState(0);
     const ref = useRef<HTMLDivElement>(null);
@@ -56,16 +59,18 @@ export default function AnimatedCounter({
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5 }}
-            className="text-center"
+            className={cn("text-center", className)}
         >
-            <div className="font-display text-5xl md:text-6xl text-white mb-2">
+            <div className={cn("font-display text-5xl md:text-6xl text-white mb-2", !label && "mb-0")}>
                 {prefix}
                 <span className="tabular-nums">{count.toLocaleString()}</span>
                 <span className="text-gold-400">{suffix}</span>
             </div>
-            <p className="text-white/40 text-sm uppercase tracking-wider font-body">
-                {label}
-            </p>
+            {label && (
+                <p className="text-white/40 text-sm uppercase tracking-wider font-body">
+                    {label}
+                </p>
+            )}
         </motion.div>
     );
 }

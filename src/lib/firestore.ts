@@ -247,3 +247,80 @@ export function getStatusDisplay(status: ShipmentStatus): string {
     };
     return displayMap[status];
 }
+
+// Wallet Types
+export interface WalletTransaction {
+    id: string;
+    userId: string;
+    type: "credit" | "debit";
+    amount: number;
+    description: string;
+    reference?: string; // Shipment ID or Payment Ref
+    status: "pending" | "success" | "failed";
+    createdAt: Timestamp;
+}
+
+// Fund Wallet
+export async function fundWallet(userId: string, amount: number, reference?: string): Promise<void> {
+    const userRef = doc(db, "users", userId);
+
+    // 1. Transaction record
+    await addDoc(collection(db, "users", userId, "transactions"), {
+        userId,
+        type: "credit",
+        amount,
+        description: "Wallet Funding",
+        reference: reference || `FUND-${Date.now()}`,
+        status: "success",
+        createdAt: serverTimestamp(),
+    });
+
+    // 2. Update balance
+    // Note: For production, use runTransaction to ensure atomicity
+    const userSnap = await getDoc(userRef);
+    const currentBalance = userSnap.data()?.walletBalance || 0;
+
+    await updateDoc(userRef, {
+        walletBalance: currentBalance + amount,
+        updatedAt: serverTimestamp(),
+    });
+}
+
+// Pay with Wallet
+export async function payWithWallet(userId: string, amount: number, shipmentId: string): Promise<void> {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    const currentBalance = userSnap.data()?.walletBalance || 0;
+
+    if (currentBalance < amount) {
+        throw new Error("Insufficient wallet balance");
+    }
+
+    // 1. Transaction record
+    await addDoc(collection(db, "users", userId, "transactions"), {
+        userId,
+        type: "debit",
+        amount,
+        description: `Payment for Shipment #${shipmentId}`,
+        reference: shipmentId,
+        status: "success",
+        createdAt: serverTimestamp(),
+    });
+
+    // 2. Deduct balance
+    await updateDoc(userRef, {
+        walletBalance: currentBalance - amount,
+        updatedAt: serverTimestamp(),
+    });
+}
+
+// Get Wallet Transactions
+export async function getWalletTransactions(userId: string): Promise<WalletTransaction[]> {
+    const q = query(
+        collection(db, "users", userId, "transactions"),
+        orderBy("createdAt", "desc")
+    );
+
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as WalletTransaction);
+}

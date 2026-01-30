@@ -22,6 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Timestamp } from "firebase/firestore";
 
 type ViewMode = "quote" | "book";
+type PaymentMethod = "card";
 
 const steps = [
     { id: 1, title: "Package", icon: Package },
@@ -36,6 +37,7 @@ export default function ShipPage() {
     const router = useRouter();
     const { user } = useAuth();
     const [isBooking, setIsBooking] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
 
     const handleBookShipment = async () => {
         if (!user) {
@@ -445,36 +447,57 @@ export default function ShipPage() {
                                                 </p>
                                             </div>
                                             <div>
-                                                <label className="block text-sm text-white/40 mb-2 font-body uppercase tracking-wider">
-                                                    Card Number
+                                                <label className="block text-sm text-white/40 mb-4 font-body uppercase tracking-wider">
+                                                    Payment Method
                                                 </label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="1234 5678 9012 3456"
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-body"
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-6">
-                                                <div>
-                                                    <label className="block text-sm text-white/40 mb-2 font-body uppercase tracking-wider">
-                                                        Expiry Date
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="MM/YY"
-                                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-body"
-                                                    />
+                                                <div className="grid grid-cols-2 gap-4 mb-6">
+                                                    <button
+                                                        onClick={() => setPaymentMethod("card")}
+                                                        className={cn(
+                                                            "p-4 rounded-xl border flex items-center justify-center gap-2 transition-all",
+                                                            "bg-gold-500/10 border-gold-500/50 text-gold-400"
+                                                        )}
+                                                    >
+                                                        <CreditCard className="w-5 h-5" />
+                                                        <span className="font-bold uppercase tracking-wider text-sm">Card</span>
+                                                    </button>
                                                 </div>
-                                                <div>
-                                                    <label className="block text-sm text-white/40 mb-2 font-body uppercase tracking-wider">
-                                                        CVV
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="123"
-                                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-body"
-                                                    />
+
+                                                <div className="space-y-6">
+                                                    <div>
+                                                        <label className="block text-sm text-white/40 mb-2 font-body uppercase tracking-wider">
+                                                            Card Number
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            placeholder="1234 5678 9012 3456"
+                                                            className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-body"
+                                                        />
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-6">
+                                                        <div>
+                                                            <label className="block text-sm text-white/40 mb-2 font-body uppercase tracking-wider">
+                                                                Expiry Date
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="MM/YY"
+                                                                className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-body"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-sm text-white/40 mb-2 font-body uppercase tracking-wider">
+                                                                CVV
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="123"
+                                                                className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-body"
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
+
                                             </div>
                                             <div className="flex items-start gap-3">
                                                 <input
