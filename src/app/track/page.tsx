@@ -76,7 +76,9 @@ function TrackPageContent() {
                 }
             } catch (err) {
                 console.error("Error fetching shipment:", err);
-                setError("Failed to load shipment details. Please try again.");
+                // Show specific error if available, otherwise generic
+                const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+                setError(`Failed to load shipment: ${errorMessage}`);
             } finally {
                 setLoading(false);
             }
