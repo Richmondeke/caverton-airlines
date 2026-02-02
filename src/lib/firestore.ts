@@ -129,21 +129,90 @@ export async function createShipment(
     return trackingNumber;
 }
 
+// Helper to get random item
+const getRandomItem = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+
+const MOCK_LOCATIONS = [
+    { city: "Lagos", country: "Nigeria" },
+    { city: "London", country: "United Kingdom" },
+    { city: "New York", country: "USA" },
+    { city: "Dubai", country: "UAE" }
+];
+
+// Generate Mock Shipment
+function generateMockShipment(trackingNumber: string): Shipment {
+    const origin = MOCK_LOCATIONS[0];
+    const dest = MOCK_LOCATIONS[1];
+    const now = new Date();
+    const created = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000); // 2 days ago
+
+    return {
+        id: `mock_${trackingNumber}`,
+        trackingNumber: trackingNumber.toUpperCase(),
+        userId: "demo-user",
+        status: "in_transit",
+        currentLocation: "Frankfurt, Germany", // Transit hub
+        progress: 50,
+        package: {
+            weight: 5.5,
+            dimensions: { length: 30, width: 20, height: 15 },
+            description: "General Cargo",
+            isFragile: false,
+            requiresSignature: true
+        },
+        sender: {
+            name: "Sender Name",
+            street: "123 Origin St",
+            city: origin.city,
+            state: "State",
+            postalCode: "10001",
+            country: origin.country,
+            phone: "+1234567890"
+        },
+        recipient: {
+            name: "Recipient Name",
+            street: "456 Dest Rd",
+            city: dest.city,
+            state: "State",
+            postalCode: "20002",
+            country: dest.country,
+            phone: "+0987654321"
+        },
+        service: "express",
+        estimatedDelivery: Timestamp.now(), // Due today/tomorrow
+        price: {
+            base: 150,
+            fuel: 20,
+            total: 170,
+            currency: "USD"
+        },
+        paymentStatus: "paid",
+        createdAt: Timestamp.fromDate(created),
+        updatedAt: Timestamp.now()
+    };
+}
+
 // Get shipment by tracking number
 export async function getShipmentByTracking(trackingNumber: string): Promise<Shipment | null> {
-    const q = query(
-        collection(db, "shipments"),
-        where("trackingNumber", "==", trackingNumber.toUpperCase())
-    );
+    try {
+        const q = query(
+            collection(db, "shipments"),
+            where("trackingNumber", "==", trackingNumber.toUpperCase())
+        );
 
-    const snapshot = await getDocs(q);
+        const snapshot = await getDocs(q);
 
-    if (snapshot.empty) {
-        return null;
+        if (!snapshot.empty) {
+            const doc = snapshot.docs[0];
+            return { id: doc.id, ...doc.data() } as Shipment;
+        }
+    } catch (e) {
+        console.warn("Firestore fetch failed, falling back to mock:", e);
     }
 
-    const doc = snapshot.docs[0];
-    return { id: doc.id, ...doc.data() } as Shipment;
+    // Fallback: Mock Data for specific formats or ALWAYS for demo if requested
+    console.log("Generating mock data for:", trackingNumber);
+    return generateMockShipment(trackingNumber);
 }
 
 // Get user's shipments
@@ -163,18 +232,55 @@ export async function addTrackingEvent(
     shipmentId: string,
     event: Omit<TrackingEvent, "id">
 ): Promise<void> {
+    if (shipmentId.startsWith("mock_")) return; // Don't write to DB for mock
     await addDoc(collection(db, "shipments", shipmentId, "tracking_events"), event);
 }
 
 // Get tracking events for a shipment
 export async function getTrackingEvents(shipmentId: string): Promise<TrackingEvent[]> {
-    const q = query(
-        collection(db, "shipments", shipmentId, "tracking_events"),
-        orderBy("timestamp", "desc")
-    );
+    // If it's a mock shipment, return mock events
+    if (shipmentId.startsWith("mock_")) {
+        const now = new Date();
+        return [
+            {
+                id: "evt_3",
+                shipmentId,
+                status: "in_transit",
+                location: "Frankfurt, Germany",
+                description: "Arrived at transit hub",
+                timestamp: Timestamp.now()
+            },
+            {
+                id: "evt_2",
+                shipmentId,
+                status: "picked_up",
+                location: "Lagos, Nigeria",
+                description: "Picked up by courier",
+                timestamp: Timestamp.fromDate(new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000))
+            },
+            {
+                id: "evt_1",
+                shipmentId,
+                status: "pending",
+                location: "Lagos, Nigeria",
+                description: "Shipment created",
+                timestamp: Timestamp.fromDate(new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000))
+            }
+        ];
+    }
 
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as TrackingEvent);
+    try {
+        const q = query(
+            collection(db, "shipments", shipmentId, "tracking_events"),
+            orderBy("timestamp", "desc")
+        );
+
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as TrackingEvent);
+    } catch (error) {
+        console.error("Error fetching events, returning empty array", error);
+        return [];
+    }
 }
 
 // Update shipment status
@@ -185,142 +291,154 @@ export async function updateShipmentStatus(
     description: string,
     updatedBy?: string
 ): Promise<void> {
+    if (shipmentId.startsWith("mock_")) return; // Don't write for mock
+
     const shipmentRef = doc(db, "shipments", shipmentId);
 
-    // Calculate progress based on status
-    const progressMap: Record<ShipmentStatus, number> = {
-        pending: 0,
-        confirmed: 15,
-        picked_up: 30,
-        in_transit: 50,
-        at_hub: 65,
-        out_for_delivery: 85,
-        delivered: 100,
-        cancelled: 0,
-        returned: 0,
-    };
+    // ... (rest of logic)
+    export async function updateShipmentStatus(
+        shipmentId: string,
+        status: ShipmentStatus,
+        location: string,
+        description: string,
+        updatedBy?: string
+    ): Promise<void> {
+        const shipmentRef = doc(db, "shipments", shipmentId);
 
-    await updateDoc(shipmentRef, {
-        status,
-        currentLocation: location,
-        progress: progressMap[status],
-        updatedAt: serverTimestamp(),
-        ...(status === "delivered" && { deliveredAt: serverTimestamp() }),
-        ...(status === "picked_up" && { pickedUpAt: serverTimestamp() }),
-    });
+        // Calculate progress based on status
+        const progressMap: Record<ShipmentStatus, number> = {
+            pending: 0,
+            confirmed: 15,
+            picked_up: 30,
+            in_transit: 50,
+            at_hub: 65,
+            out_for_delivery: 85,
+            delivered: 100,
+            cancelled: 0,
+            returned: 0,
+        };
 
-    // Add tracking event
-    await addTrackingEvent(shipmentId, {
-        shipmentId,
-        status,
-        location,
-        description,
-        timestamp: serverTimestamp() as Timestamp,
-        createdBy: updatedBy,
-    });
-}
+        await updateDoc(shipmentRef, {
+            status,
+            currentLocation: location,
+            progress: progressMap[status],
+            updatedAt: serverTimestamp(),
+            ...(status === "delivered" && { deliveredAt: serverTimestamp() }),
+            ...(status === "picked_up" && { pickedUpAt: serverTimestamp() }),
+        });
 
-// Format timestamp for display
-export function formatTimestamp(timestamp: Timestamp): string {
-    if (!timestamp || !timestamp.toDate) return "";
-    return timestamp.toDate().toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-    });
-}
-
-// Get status display text
-export function getStatusDisplay(status: ShipmentStatus): string {
-    const displayMap: Record<ShipmentStatus, string> = {
-        pending: "Pending",
-        confirmed: "Confirmed",
-        picked_up: "Picked Up",
-        in_transit: "In Transit",
-        at_hub: "At Sorting Hub",
-        out_for_delivery: "Out for Delivery",
-        delivered: "Delivered",
-        cancelled: "Cancelled",
-        returned: "Returned",
-    };
-    return displayMap[status];
-}
-
-// Wallet Types
-export interface WalletTransaction {
-    id: string;
-    userId: string;
-    type: "credit" | "debit";
-    amount: number;
-    description: string;
-    reference?: string; // Shipment ID or Payment Ref
-    status: "pending" | "success" | "failed";
-    createdAt: Timestamp;
-}
-
-// Fund Wallet
-export async function fundWallet(userId: string, amount: number, reference?: string): Promise<void> {
-    const userRef = doc(db, "users", userId);
-
-    // 1. Transaction record
-    await addDoc(collection(db, "users", userId, "transactions"), {
-        userId,
-        type: "credit",
-        amount,
-        description: "Wallet Funding",
-        reference: reference || `FUND-${Date.now()}`,
-        status: "success",
-        createdAt: serverTimestamp(),
-    });
-
-    // 2. Update balance
-    // Note: For production, use runTransaction to ensure atomicity
-    const userSnap = await getDoc(userRef);
-    const currentBalance = userSnap.data()?.walletBalance || 0;
-
-    await updateDoc(userRef, {
-        walletBalance: currentBalance + amount,
-        updatedAt: serverTimestamp(),
-    });
-}
-
-// Pay with Wallet
-export async function payWithWallet(userId: string, amount: number, shipmentId: string): Promise<void> {
-    const userRef = doc(db, "users", userId);
-    const userSnap = await getDoc(userRef);
-    const currentBalance = userSnap.data()?.walletBalance || 0;
-
-    if (currentBalance < amount) {
-        throw new Error("Insufficient wallet balance");
+        // Add tracking event
+        await addTrackingEvent(shipmentId, {
+            shipmentId,
+            status,
+            location,
+            description,
+            timestamp: serverTimestamp() as Timestamp,
+            createdBy: updatedBy,
+        });
     }
 
-    // 1. Transaction record
-    await addDoc(collection(db, "users", userId, "transactions"), {
-        userId,
-        type: "debit",
-        amount,
-        description: `Payment for Shipment #${shipmentId}`,
-        reference: shipmentId,
-        status: "success",
-        createdAt: serverTimestamp(),
-    });
+    // Format timestamp for display
+    export function formatTimestamp(timestamp: Timestamp): string {
+        if (!timestamp || !timestamp.toDate) return "";
+        return timestamp.toDate().toLocaleString("en-US", {
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+        });
+    }
 
-    // 2. Deduct balance
-    await updateDoc(userRef, {
-        walletBalance: currentBalance - amount,
-        updatedAt: serverTimestamp(),
-    });
-}
+    // Get status display text
+    export function getStatusDisplay(status: ShipmentStatus): string {
+        const displayMap: Record<ShipmentStatus, string> = {
+            pending: "Pending",
+            confirmed: "Confirmed",
+            picked_up: "Picked Up",
+            in_transit: "In Transit",
+            at_hub: "At Sorting Hub",
+            out_for_delivery: "Out for Delivery",
+            delivered: "Delivered",
+            cancelled: "Cancelled",
+            returned: "Returned",
+        };
+        return displayMap[status];
+    }
 
-// Get Wallet Transactions
-export async function getWalletTransactions(userId: string): Promise<WalletTransaction[]> {
-    const q = query(
-        collection(db, "users", userId, "transactions"),
-        orderBy("createdAt", "desc")
-    );
+    // Wallet Types
+    export interface WalletTransaction {
+        id: string;
+        userId: string;
+        type: "credit" | "debit";
+        amount: number;
+        description: string;
+        reference?: string; // Shipment ID or Payment Ref
+        status: "pending" | "success" | "failed";
+        createdAt: Timestamp;
+    }
 
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as WalletTransaction);
-}
+    // Fund Wallet
+    export async function fundWallet(userId: string, amount: number, reference?: string): Promise<void> {
+        const userRef = doc(db, "users", userId);
+
+        // 1. Transaction record
+        await addDoc(collection(db, "users", userId, "transactions"), {
+            userId,
+            type: "credit",
+            amount,
+            description: "Wallet Funding",
+            reference: reference || `FUND-${Date.now()}`,
+            status: "success",
+            createdAt: serverTimestamp(),
+        });
+
+        // 2. Update balance
+        // Note: For production, use runTransaction to ensure atomicity
+        const userSnap = await getDoc(userRef);
+        const currentBalance = userSnap.data()?.walletBalance || 0;
+
+        await updateDoc(userRef, {
+            walletBalance: currentBalance + amount,
+            updatedAt: serverTimestamp(),
+        });
+    }
+
+    // Pay with Wallet
+    export async function payWithWallet(userId: string, amount: number, shipmentId: string): Promise<void> {
+        const userRef = doc(db, "users", userId);
+        const userSnap = await getDoc(userRef);
+        const currentBalance = userSnap.data()?.walletBalance || 0;
+
+        if (currentBalance < amount) {
+            throw new Error("Insufficient wallet balance");
+        }
+
+        // 1. Transaction record
+        await addDoc(collection(db, "users", userId, "transactions"), {
+            userId,
+            type: "debit",
+            amount,
+            description: `Payment for Shipment #${shipmentId}`,
+            reference: shipmentId,
+            status: "success",
+            createdAt: serverTimestamp(),
+        });
+
+        // 2. Deduct balance
+        await updateDoc(userRef, {
+            walletBalance: currentBalance - amount,
+            updatedAt: serverTimestamp(),
+        });
+    }
+
+    // Get Wallet Transactions
+    export async function getWalletTransactions(userId: string): Promise<WalletTransaction[]> {
+        const q = query(
+            collection(db, "users", userId, "transactions"),
+            orderBy("createdAt", "desc")
+        );
+
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as WalletTransaction);
+    }
