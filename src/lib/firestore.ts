@@ -295,150 +295,141 @@ export async function updateShipmentStatus(
 
     const shipmentRef = doc(db, "shipments", shipmentId);
 
-    // ... (rest of logic)
-    export async function updateShipmentStatus(
-        shipmentId: string,
-        status: ShipmentStatus,
-        location: string,
-        description: string,
-        updatedBy?: string
-    ): Promise<void> {
-        const shipmentRef = doc(db, "shipments", shipmentId);
+    // Calculate progress based on status
+    const progressMap: Record<ShipmentStatus, number> = {
+        pending: 0,
+        confirmed: 15,
+        picked_up: 30,
+        in_transit: 50,
+        at_hub: 65,
+        out_for_delivery: 85,
+        delivered: 100,
+        cancelled: 0,
+        returned: 0,
+    };
 
-        // Calculate progress based on status
-        const progressMap: Record<ShipmentStatus, number> = {
-            pending: 0,
-            confirmed: 15,
-            picked_up: 30,
-            in_transit: 50,
-            at_hub: 65,
-            out_for_delivery: 85,
-            delivered: 100,
-            cancelled: 0,
-            returned: 0,
-        };
+    await updateDoc(shipmentRef, {
+        status,
+        currentLocation: location,
+        progress: progressMap[status],
+        updatedAt: serverTimestamp(),
+        ...(status === "delivered" && { deliveredAt: serverTimestamp() }),
+        ...(status === "picked_up" && { pickedUpAt: serverTimestamp() }),
+    });
 
-        await updateDoc(shipmentRef, {
-            status,
-            currentLocation: location,
-            progress: progressMap[status],
-            updatedAt: serverTimestamp(),
-            ...(status === "delivered" && { deliveredAt: serverTimestamp() }),
-            ...(status === "picked_up" && { pickedUpAt: serverTimestamp() }),
-        });
+    // Add tracking event
+    await addTrackingEvent(shipmentId, {
+        shipmentId,
+        status,
+        location,
+        description,
+        timestamp: serverTimestamp() as Timestamp,
+        createdBy: updatedBy,
+    });
+}
 
-        // Add tracking event
-        await addTrackingEvent(shipmentId, {
-            shipmentId,
-            status,
-            location,
-            description,
-            timestamp: serverTimestamp() as Timestamp,
-            createdBy: updatedBy,
-        });
+
+// Format timestamp for display
+export function formatTimestamp(timestamp: Timestamp): string {
+    if (!timestamp || !timestamp.toDate) return "";
+    return timestamp.toDate().toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+    });
+}
+
+// Get status display text
+export function getStatusDisplay(status: ShipmentStatus): string {
+    const displayMap: Record<ShipmentStatus, string> = {
+        pending: "Pending",
+        confirmed: "Confirmed",
+        picked_up: "Picked Up",
+        in_transit: "In Transit",
+        at_hub: "At Sorting Hub",
+        out_for_delivery: "Out for Delivery",
+        delivered: "Delivered",
+        cancelled: "Cancelled",
+        returned: "Returned",
+    };
+    return displayMap[status];
+}
+
+// Wallet Types
+export interface WalletTransaction {
+    id: string;
+    userId: string;
+    type: "credit" | "debit";
+    amount: number;
+    description: string;
+    reference?: string; // Shipment ID or Payment Ref
+    status: "pending" | "success" | "failed";
+    createdAt: Timestamp;
+}
+
+// Fund Wallet
+export async function fundWallet(userId: string, amount: number, reference?: string): Promise<void> {
+    const userRef = doc(db, "users", userId);
+
+    // 1. Transaction record
+    await addDoc(collection(db, "users", userId, "transactions"), {
+        userId,
+        type: "credit",
+        amount,
+        description: "Wallet Funding",
+        reference: reference || `FUND-${Date.now()}`,
+        status: "success",
+        createdAt: serverTimestamp(),
+    });
+
+    // 2. Update balance
+    // Note: For production, use runTransaction to ensure atomicity
+    const userSnap = await getDoc(userRef);
+    const currentBalance = userSnap.data()?.walletBalance || 0;
+
+    await updateDoc(userRef, {
+        walletBalance: currentBalance + amount,
+        updatedAt: serverTimestamp(),
+    });
+}
+
+// Pay with Wallet
+export async function payWithWallet(userId: string, amount: number, shipmentId: string): Promise<void> {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    const currentBalance = userSnap.data()?.walletBalance || 0;
+
+    if (currentBalance < amount) {
+        throw new Error("Insufficient wallet balance");
     }
 
-    // Format timestamp for display
-    export function formatTimestamp(timestamp: Timestamp): string {
-        if (!timestamp || !timestamp.toDate) return "";
-        return timestamp.toDate().toLocaleString("en-US", {
-            month: "short",
-            day: "numeric",
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-        });
-    }
+    // 1. Transaction record
+    await addDoc(collection(db, "users", userId, "transactions"), {
+        userId,
+        type: "debit",
+        amount,
+        description: `Payment for Shipment #${shipmentId}`,
+        reference: shipmentId,
+        status: "success",
+        createdAt: serverTimestamp(),
+    });
 
-    // Get status display text
-    export function getStatusDisplay(status: ShipmentStatus): string {
-        const displayMap: Record<ShipmentStatus, string> = {
-            pending: "Pending",
-            confirmed: "Confirmed",
-            picked_up: "Picked Up",
-            in_transit: "In Transit",
-            at_hub: "At Sorting Hub",
-            out_for_delivery: "Out for Delivery",
-            delivered: "Delivered",
-            cancelled: "Cancelled",
-            returned: "Returned",
-        };
-        return displayMap[status];
-    }
+    // 2. Deduct balance
+    await updateDoc(userRef, {
+        walletBalance: currentBalance - amount,
+        updatedAt: serverTimestamp(),
+    });
+}
 
-    // Wallet Types
-    export interface WalletTransaction {
-        id: string;
-        userId: string;
-        type: "credit" | "debit";
-        amount: number;
-        description: string;
-        reference?: string; // Shipment ID or Payment Ref
-        status: "pending" | "success" | "failed";
-        createdAt: Timestamp;
-    }
+// Get Wallet Transactions
+export async function getWalletTransactions(userId: string): Promise<WalletTransaction[]> {
+    const q = query(
+        collection(db, "users", userId, "transactions"),
+        orderBy("createdAt", "desc")
+    );
 
-    // Fund Wallet
-    export async function fundWallet(userId: string, amount: number, reference?: string): Promise<void> {
-        const userRef = doc(db, "users", userId);
-
-        // 1. Transaction record
-        await addDoc(collection(db, "users", userId, "transactions"), {
-            userId,
-            type: "credit",
-            amount,
-            description: "Wallet Funding",
-            reference: reference || `FUND-${Date.now()}`,
-            status: "success",
-            createdAt: serverTimestamp(),
-        });
-
-        // 2. Update balance
-        // Note: For production, use runTransaction to ensure atomicity
-        const userSnap = await getDoc(userRef);
-        const currentBalance = userSnap.data()?.walletBalance || 0;
-
-        await updateDoc(userRef, {
-            walletBalance: currentBalance + amount,
-            updatedAt: serverTimestamp(),
-        });
-    }
-
-    // Pay with Wallet
-    export async function payWithWallet(userId: string, amount: number, shipmentId: string): Promise<void> {
-        const userRef = doc(db, "users", userId);
-        const userSnap = await getDoc(userRef);
-        const currentBalance = userSnap.data()?.walletBalance || 0;
-
-        if (currentBalance < amount) {
-            throw new Error("Insufficient wallet balance");
-        }
-
-        // 1. Transaction record
-        await addDoc(collection(db, "users", userId, "transactions"), {
-            userId,
-            type: "debit",
-            amount,
-            description: `Payment for Shipment #${shipmentId}`,
-            reference: shipmentId,
-            status: "success",
-            createdAt: serverTimestamp(),
-        });
-
-        // 2. Deduct balance
-        await updateDoc(userRef, {
-            walletBalance: currentBalance - amount,
-            updatedAt: serverTimestamp(),
-        });
-    }
-
-    // Get Wallet Transactions
-    export async function getWalletTransactions(userId: string): Promise<WalletTransaction[]> {
-        const q = query(
-            collection(db, "users", userId, "transactions"),
-            orderBy("createdAt", "desc")
-        );
-
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as WalletTransaction);
-    }
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as WalletTransaction);
+}
