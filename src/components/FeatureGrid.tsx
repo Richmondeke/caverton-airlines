@@ -30,7 +30,9 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
                     variants={fadeInUp}
                     whileHover={{ y: -4 }}
                     className={cn(
-                        "group relative rounded-2xl bg-white/5 border border-white/10 p-8 overflow-hidden transition-all duration-300 hover:border-gold-500/30 hover:bg-white/[0.07]",
+                        "bg-white/50 backdrop-blur-md border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-colors",
+                        "dark:bg-blue-sky/10 dark:border-blue-sky/20", // Tertiary Blue in Dark Mode
+                        "hover:dark:bg-blue-sky/20",
                         feature.span === "wide" && "md:col-span-2",
                         feature.span === "tall" && "md:row-span-2"
                     )}

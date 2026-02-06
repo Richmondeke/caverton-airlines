@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 uid: user.uid,
                 email: user.email || "",
                 displayName: displayName || user.displayName || "User",
-                role: "customer",
+                role: (["richmondeke@gmail.com", "godliverse@gmail.com"].includes(user.email || "")) ? "admin" : "customer",
                 walletBalance: 0,
             };
 
@@ -71,7 +71,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             return profile;
         }
 
-        return userSnap.data() as UserProfile;
+        const data = userSnap.data() as UserProfile;
+        const adminEmails = ["richmondeke@gmail.com", "godliverse@gmail.com"];
+        if (adminEmails.includes(data.email) && data.role !== "admin") {
+            // Auto-fix admin role if it was previously set to customer
+            // We can try to update it if rules allow, or just return it as admin in session
+            return { ...data, role: "admin" as const };
+        }
+
+        return data;
     }
 
     // Listen for auth state changes

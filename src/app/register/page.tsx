@@ -46,10 +46,10 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center py-24 px-6 bg-navy-900">
+        <div className="min-h-screen flex items-center justify-center py-24 px-6 bg-white dark:bg-navy-900 transition-colors duration-500">
             {/* Background */}
-            <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-navy-800 via-navy-900 to-black" />
-            <div className="fixed inset-0 z-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+            <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-100 via-white to-gray-50 dark:from-navy-800 dark:via-navy-900 dark:to-black" />
+            <div className="fixed inset-0 z-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] dark:invert" />
 
             <motion.div
                 initial="hidden"
@@ -64,10 +64,10 @@ export default function RegisterPage() {
                             <Package className="w-6 h-6 text-navy-900" />
                         </div>
                         <div className="text-left">
-                            <span className="font-display text-xl font-semibold text-white block">
-                                Cargo<span className="text-gold-400">fly</span>
+                            <span className="font-display text-xl font-semibold text-navy-900 dark:text-white block">
+                                Cargo<span className="text-gold-500 dark:text-gold-400">fly</span>
                             </span>
-                            <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-body">
+                            <span className="text-[10px] uppercase tracking-[0.2em] text-navy-900/40 dark:text-white/40 font-body">
                                 Caverton Cargo
                             </span>
                         </div>

@@ -29,8 +29,8 @@ export default function ServiceCard({
             className={cn(
                 "group relative rounded-2xl overflow-hidden transition-all duration-500",
                 featured
-                    ? "bg-gradient-to-br from-gold-500/20 to-amber-400/10 border border-gold-500/30"
-                    : "bg-white/5 border border-white/10 hover:border-gold-500/30"
+                    ? "bg-gradient-to-br from-gold-500/20 to-amber-400/10 border border-gold-500/30 dark:bg-blue-sky/10 dark:border-blue-sky/30"
+                    : "bg-white/5 border border-white/10 hover:border-gold-500/30 dark:bg-blue-sky/5 dark:border-blue-sky/20 dark:hover:border-gold-500/50"
             )}
         >
             {/* Featured Badge */}
@@ -54,8 +54,8 @@ export default function ServiceCard({
                 </div>
 
                 {/* Content */}
-                <h3 className="font-display text-xl text-white mb-3">{title}</h3>
-                <p className="text-white/60 text-sm font-body leading-relaxed mb-6">
+                <h3 className="font-display text-xl text-navy-900 dark:text-white mb-3">{title}</h3>
+                <p className="text-navy-900/70 dark:text-white/70 text-sm font-body leading-relaxed mb-6">
                     {description}
                 </p>
 
@@ -67,13 +67,13 @@ export default function ServiceCard({
                                 className={cn(
                                     "w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0",
                                     featured
-                                        ? "bg-gold-500/20 text-gold-400"
-                                        : "bg-white/5 text-white/60"
+                                        ? "bg-gold-500/20 text-navy-900 dark:text-gold-400"
+                                        : "bg-navy-900/5 text-navy-900/60 dark:bg-white/5 dark:text-white/60"
                                 )}
                             >
                                 <Check className="w-3 h-3" />
                             </div>
-                            <span className="text-sm text-white/70 font-body">{feature}</span>
+                            <span className="text-sm text-navy-900/80 dark:text-white/70 font-body">{feature}</span>
                         </li>
                     ))}
                 </ul>
@@ -85,8 +85,8 @@ export default function ServiceCard({
                         className={cn(
                             "flex items-center gap-2 text-sm font-semibold uppercase tracking-wider transition-colors",
                             featured
-                                ? "text-gold-400 hover:text-gold-300"
-                                : "text-white/60 hover:text-gold-400"
+                                ? "text-navy-900 dark:text-gold-400 hover:text-navy-800 dark:hover:text-gold-300"
+                                : "text-navy-900/70 dark:text-white/60 hover:text-navy-900 dark:hover:text-gold-400"
                         )}
                     >
                         Learn More

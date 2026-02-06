@@ -134,8 +134,8 @@ export default function Home() {
       <Hero />
 
       {/* Services Section */}
-      <section className="relative py-32 bg-navy-900">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-navy-800/50 via-transparent to-transparent" />
+      <section className="relative py-32 bg-white dark:bg-navy-900 transition-colors duration-500">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent dark:from-navy-800/50 dark:via-transparent dark:to-transparent" />
 
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
@@ -148,11 +148,11 @@ export default function Home() {
             <span className="inline-block py-1 px-3 rounded-full bg-gold-500/10 text-gold-400 text-xs font-bold tracking-[0.2em] uppercase mb-6 font-body">
               Our Services
             </span>
-            <h2 className="font-display text-4xl md:text-5xl text-white mb-4">
+            <h2 className="font-display text-4xl md:text-5xl text-navy-900 dark:text-white mb-4">
               Premium Shipping
-              <span className="block italic text-white/80">Solutions</span>
+              <span className="block italic text-navy-900/80 dark:text-white/80">Solutions</span>
             </h2>
-            <p className="text-white/60 max-w-2xl mx-auto font-body">
+            <p className="text-navy-900/60 dark:text-white/60 max-w-2xl mx-auto font-body">
               From express air freight to comprehensive ground transport, we
               offer tailored logistics solutions for the discerning.
             </p>
@@ -178,7 +178,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="relative py-24 bg-gradient-to-b from-navy-900 to-black border-y border-white/5">
+      <section className="relative py-24 bg-white dark:bg-navy-900 border-y border-navy-900/5 dark:border-white/5 transition-colors duration-500">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
             <AnimatedCounter value={200} suffix="+" label="Countries Served" />
@@ -190,8 +190,8 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="relative py-32 bg-black">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-navy-800/30 via-transparent to-transparent" />
+      <section className="relative py-32 bg-white dark:bg-black transition-colors duration-500">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-gray-100/50 via-transparent to-transparent dark:from-navy-800/30 dark:via-transparent dark:to-transparent" />
 
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
@@ -204,9 +204,9 @@ export default function Home() {
             <span className="inline-block py-1 px-3 rounded-full bg-gold-500/10 text-gold-400 text-xs font-bold tracking-[0.2em] uppercase mb-6 font-body">
               Why Choose Us
             </span>
-            <h2 className="font-display text-4xl md:text-5xl text-white mb-4">
+            <h2 className="font-display text-4xl md:text-5xl text-navy-900 dark:text-white mb-4">
               Built for
-              <span className="block italic text-white/80">Excellence</span>
+              <span className="block italic text-navy-900/80 dark:text-white/80">Excellence</span>
             </h2>
           </motion.div>
 
@@ -215,15 +215,15 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="relative py-32 bg-navy-900 overflow-hidden">
+      <section className="relative py-32 bg-white dark:bg-navy-900 overflow-hidden transition-colors duration-500">
         <div className="absolute inset-0">
           <Image
             src="/images/cargo-hangar.png"
             alt="Cargo operations"
             fill
-            className="object-cover opacity-10"
+            className="object-cover opacity-5 dark:opacity-10"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/95 to-navy-900" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white dark:from-navy-900 dark:via-navy-900/95 dark:to-navy-900 transition-colors duration-500" />
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
@@ -238,11 +238,11 @@ export default function Home() {
                 <span className="inline-block py-1 px-3 rounded-full bg-gold-500/10 text-gold-400 text-xs font-bold tracking-[0.2em] uppercase mb-6 font-body">
                   How It Works
                 </span>
-                <h2 className="font-display text-4xl md:text-5xl text-white mb-6">
+                <h2 className="font-display text-4xl md:text-5xl text-navy-900 dark:text-white mb-6">
                   Shipping Made
-                  <span className="block italic text-white/80">Simple</span>
+                  <span className="block italic text-navy-900/80 dark:text-white/80">Simple</span>
                 </h2>
-                <p className="text-white/60 mb-12 font-body leading-relaxed">
+                <p className="text-navy-900/60 dark:text-white/60 mb-12 font-body leading-relaxed">
                   Three simple steps to get your cargo where it needs to be. Our
                   streamlined process ensures efficiency without compromising on
                   quality.
@@ -262,10 +262,10 @@ export default function Home() {
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-display text-xl text-white mb-2">
+                      <h3 className="font-display text-xl text-navy-900 dark:text-white mb-2">
                         {step.title}
                       </h3>
-                      <p className="text-white/60 font-body">
+                      <p className="text-navy-900/60 dark:text-white/60 font-body">
                         {step.description}
                       </p>
                     </div>
@@ -304,7 +304,7 @@ export default function Home() {
                   fill
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-50 via-transparent to-transparent dark:from-navy-900 dark:via-transparent dark:to-transparent" />
 
                 {/* Floating Badge */}
                 <div className="absolute bottom-8 left-8 right-8 glass-panel rounded-2xl p-6">
@@ -329,7 +329,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="relative py-32 bg-black">
+      <section className="relative py-32 bg-white dark:bg-black transition-colors duration-500">
         <div className="container mx-auto px-6">
           <motion.div
             initial="hidden"
@@ -341,9 +341,9 @@ export default function Home() {
             <span className="inline-block py-1 px-3 rounded-full bg-gold-500/10 text-gold-400 text-xs font-bold tracking-[0.2em] uppercase mb-6 font-body">
               Testimonials
             </span>
-            <h2 className="font-display text-4xl md:text-5xl text-white mb-4">
+            <h2 className="font-display text-4xl md:text-5xl text-navy-900 dark:text-white mb-4">
               Trusted by
-              <span className="block italic text-white/80">Industry Leaders</span>
+              <span className="block italic text-navy-900/80 dark:text-white/80">Industry Leaders</span>
             </h2>
           </motion.div>
 
@@ -353,7 +353,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-gold-500/20 via-navy-900 to-black" />
+        <div className="absolute inset-0 bg-gradient-to-br from-gold-500/10 via-white to-gray-50 dark:from-gold-500/20 dark:via-navy-900 dark:to-black transition-colors duration-500" />
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
 
         <div className="container mx-auto px-6 relative z-10">
@@ -364,10 +364,10 @@ export default function Home() {
               viewport={{ once: true }}
               variants={staggerContainer}
             >
-              <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-6xl text-white mb-6">
+              <motion.h2 variants={fadeInUp} className="font-display text-4xl md:text-6xl text-navy-900 dark:text-white mb-6">
                 Ready to Ship?
               </motion.h2>
-              <motion.p variants={fadeInUp} className="text-white/60 text-lg font-body mb-10">
+              <motion.p variants={fadeInUp} className="text-navy-900/60 dark:text-white/60 text-lg font-body mb-10">
                 Experience the pinnacle of West African aviation logistics. Get
                 started with a quote today.
               </motion.p>
@@ -385,7 +385,7 @@ export default function Home() {
                 <Link href="/contact">
                   <motion.button
                     whileHover={{ y: -2 }}
-                    className="inline-flex items-center gap-2 px-10 py-5 border border-white/20 text-white rounded-xl font-medium uppercase tracking-wider hover:border-gold-500/50 hover:text-gold-400 transition-all"
+                    className="inline-flex items-center gap-2 px-10 py-5 border border-navy-900/20 dark:border-white/20 text-navy-900 dark:text-white rounded-xl font-medium uppercase tracking-wider hover:border-gold-500/50 hover:text-gold-500 dark:hover:text-gold-400 transition-all"
                   >
                     Contact Sales
                   </motion.button>

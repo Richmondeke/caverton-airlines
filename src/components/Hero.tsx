@@ -26,7 +26,8 @@ export default function Hero() {
     return (
         <section className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-20">
             {/* Background */}
-            <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-navy-800 via-navy-900 to-black" />
+            {/* Background */}
+            <div className="absolute inset-0 z-0 bg-white dark:bg-navy-900 transition-colors duration-500" />
             <div className="absolute inset-0 z-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] filter contrast-150 brightness-100" />
 
             {/* Floating Orbs */}
@@ -47,10 +48,10 @@ export default function Hero() {
                     src="/images/hero-aircraft.png"
                     alt="Caverton cargo aircraft at sunset"
                     fill
-                    className="object-cover opacity-20"
+                    className="object-cover opacity-10 dark:opacity-20 transition-opacity duration-500"
                     priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-navy-900/80 via-navy-900/60 to-navy-900" />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white dark:from-navy-900/80 dark:via-navy-900/60 dark:to-navy-900 transition-colors duration-500" />
             </div>
 
             <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-12 gap-12 items-center">
@@ -65,13 +66,14 @@ export default function Hero() {
                         <span className="inline-block py-1 px-3 rounded-full bg-white/5 border border-white/10 text-gold-400 text-xs font-bold tracking-[0.2em] uppercase mb-6 backdrop-blur-md font-body">
                             Premium Aviation Logistics
                         </span>
-                        <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-medium leading-[0.95] text-white overflow-hidden pb-4">
+                        <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-medium leading-[0.95] text-navy-900 dark:text-white overflow-hidden pb-4">
                             <motion.span className="block" variants={textReveal}>Ship Beyond</motion.span>
-                            <motion.span className="block italic text-white/90" variants={textReveal}>
+                            <motion.span className="block italic text-navy-900/90 dark:text-white/90" variants={textReveal}>
                                 Boundaries
                             </motion.span>
+
                         </h1>
-                        <p className="mt-8 text-lg text-white/60 max-w-xl leading-relaxed font-body">
+                        <p className="mt-8 text-lg text-navy-900 dark:text-white/80 max-w-xl leading-relaxed font-body font-medium">
                             The pinnacle of West African cargo services. Where luxury meets
                             logistics, and every shipment is crafted for the discerning.
                         </p>
@@ -88,12 +90,12 @@ export default function Hero() {
                             { icon: Clock, value: "99%", label: "On Time" },
                         ].map((stat, i) => (
                             <motion.div key={i} variants={fadeInUp} className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-                                    <stat.icon className="w-5 h-5 text-gold-400" />
+                                <div className="w-12 h-12 rounded-xl bg-navy-900/5 dark:bg-white/5 border border-navy-900/10 dark:border-white/10 flex items-center justify-center">
+                                    <stat.icon className="w-5 h-5 text-gold-500 dark:text-gold-400" />
                                 </div>
                                 <div>
-                                    <p className="font-display text-2xl text-white">{stat.value}</p>
-                                    <p className="text-xs uppercase tracking-wider text-white/40 font-body">
+                                    <p className="font-display text-2xl text-navy-900 dark:text-white">{stat.value}</p>
+                                    <p className="text-xs uppercase tracking-wider text-navy-900/50 dark:text-white/40 font-body">
                                         {stat.label}
                                     </p>
                                 </div>
@@ -101,33 +103,33 @@ export default function Hero() {
                         ))}
                     </motion.div>
 
-                    {/* CTA Buttons */}
+                    {/* CTA Buttons - Stack on Mobile, Row on Desktop */}
                     <motion.div
                         variants={fadeInUp}
-                        className="flex flex-wrap gap-4 pt-4"
+                        className="flex flex-col sm:flex-row gap-4 pt-4 w-full sm:w-auto"
                     >
-                        <Link href="/ship">
+                        <Link href="/ship" className="w-full sm:w-auto">
                             <motion.button
                                 whileHover={{ y: -3 }}
                                 whileTap={{ scale: 0.98 }}
-                                className="group relative px-8 py-4 bg-gradient-to-r from-gold-500 to-amber-400 text-navy-900 rounded-xl font-bold uppercase tracking-wider overflow-hidden transition-all hover:shadow-[0_0_40px_rgba(202,138,4,0.4)]"
+                                className="w-full sm:w-auto group relative px-8 py-4 bg-gradient-to-r from-gold-500 to-amber-400 text-navy-900 rounded-xl font-bold uppercase tracking-wider overflow-hidden transition-all hover:shadow-[0_0_40px_rgba(202,138,4,0.4)]"
                             >
-                                <span className="relative z-10 flex items-center gap-2">
+                                <span className="relative z-10 flex items-center justify-center gap-2">
                                     Ship Now
                                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </span>
                                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                             </motion.button>
                         </Link>
-                        <Link href="/services">
+                        <Link href="/services" className="w-full sm:w-auto">
                             <motion.button
                                 whileHover={{ y: -2 }}
-                                className="group relative px-8 py-4 bg-transparent border border-white/20 text-white rounded-xl font-medium uppercase tracking-wider overflow-hidden transition-all hover:border-gold-500/50"
+                                className="w-full sm:w-auto group relative px-8 py-4 bg-transparent border border-navy-900/20 dark:border-white/20 text-navy-900 dark:text-white rounded-xl font-medium uppercase tracking-wider overflow-hidden transition-all hover:border-gold-500/50"
                             >
-                                <span className="relative z-10 group-hover:text-gold-400 transition-colors">
+                                <span className="relative z-10 group-hover:text-gold-500 dark:group-hover:text-gold-400 transition-colors flex justify-center">
                                     Explore Services
                                 </span>
-                                <div className="absolute inset-0 bg-white/5 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500" />
+                                <div className="absolute inset-0 bg-navy-900/5 dark:bg-white/5 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500" />
                             </motion.button>
                         </Link>
                     </motion.div>
@@ -139,16 +141,16 @@ export default function Hero() {
                         initial="hidden"
                         animate="visible"
                         variants={scaleIn}
-                        className="glass-panel p-1 rounded-3xl"
+                        className="bg-navy-900/40 backdrop-blur-xl border border-white/10 shadow-xl p-1 rounded-3xl"
                     >
-                        <div className="bg-navy-900/40 backdrop-blur-xl rounded-[20px] p-8 border border-white/5">
+                        <div className="bg-white/50 dark:bg-navy-900/40 backdrop-blur-xl rounded-[20px] p-8 border border-white/20 dark:border-white/5 shadow-xl dark:shadow-none">
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="w-10 h-10 rounded-xl bg-gold-500/20 flex items-center justify-center">
-                                    <Search className="w-5 h-5 text-gold-400" />
+                                <div className="w-10 h-10 rounded-xl bg-gold-500/10 dark:bg-gold-500/20 flex items-center justify-center">
+                                    <Search className="w-5 h-5 text-gold-500 dark:text-gold-400" />
                                 </div>
                                 <div>
-                                    <h3 className="font-display text-lg text-white">Track Shipment</h3>
-                                    <p className="text-xs text-white/40 font-body">
+                                    <h3 className="font-display text-lg text-navy-900 dark:text-white">Track Shipment</h3>
+                                    <p className="text-xs text-navy-900/50 dark:text-white/40 font-body">
                                         Enter your tracking number
                                     </p>
                                 </div>
@@ -163,7 +165,7 @@ export default function Hero() {
                                         onChange={(e) => setTrackingNumber(e.target.value)}
                                         onKeyDown={(e) => e.key === "Enter" && handleTrack()}
                                         placeholder="e.g., CF-2025-8473629"
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-body font-mono"
+                                        className="w-full bg-white dark:bg-white/5 border border-navy-900/10 dark:border-white/10 rounded-xl py-4 pl-12 pr-4 text-navy-900 dark:text-white placeholder:text-navy-900/30 dark:placeholder:text-white/30 focus:outline-none focus:border-gold-500/50 transition-all font-body font-mono shadow-sm dark:shadow-none"
                                         maxLength={20}
                                     />
                                 </div>
@@ -178,32 +180,32 @@ export default function Hero() {
                                     <span>Track Package</span>
                                 </motion.button>
 
-                                <p className="text-center text-xs text-white/40 font-body">
+                                <p className="text-center text-xs text-navy-900/40 dark:text-white/40 font-body">
                                     Real-time tracking powered by GPS technology
                                 </p>
                             </div>
 
                             {/* Quick Links */}
-                            <div className="mt-8 pt-6 border-t border-white/10">
-                                <p className="text-xs uppercase tracking-wider text-white/40 mb-4 font-body">
+                            <div className="mt-8 pt-6 border-t border-navy-900/10 dark:border-white/10">
+                                <p className="text-xs uppercase tracking-wider text-navy-900/40 dark:text-white/40 mb-4 font-body">
                                     Quick Actions
                                 </p>
                                 <div className="grid grid-cols-2 gap-3">
                                     <Link
                                         href="/ship"
-                                        className="flex items-center gap-2 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group"
+                                        className="flex items-center gap-2 p-3 rounded-lg bg-navy-900/5 dark:bg-white/5 hover:bg-navy-900/10 dark:hover:bg-white/10 transition-colors group"
                                     >
-                                        <Package className="w-4 h-4 text-gold-400" />
-                                        <span className="text-sm text-white/80 group-hover:text-white font-body">
+                                        <Package className="w-4 h-4 text-gold-500 dark:text-gold-400" />
+                                        <span className="text-sm text-navy-900/80 dark:text-white/80 group-hover:text-navy-900 dark:group-hover:text-white font-body">
                                             Ship Package
                                         </span>
                                     </Link>
                                     <Link
                                         href="/services#rates"
-                                        className="flex items-center gap-2 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group"
+                                        className="flex items-center gap-2 p-3 rounded-lg bg-navy-900/5 dark:bg-white/5 hover:bg-navy-900/10 dark:hover:bg-white/10 transition-colors group"
                                     >
-                                        <MapPin className="w-4 h-4 text-gold-400" />
-                                        <span className="text-sm text-white/80 group-hover:text-white font-body">
+                                        <MapPin className="w-4 h-4 text-gold-500 dark:text-gold-400" />
+                                        <span className="text-sm text-navy-900/80 dark:text-white/80 group-hover:text-navy-900 dark:group-hover:text-white font-body">
                                             Get Quote
                                         </span>
                                     </Link>
@@ -243,6 +245,6 @@ export default function Hero() {
                     />
                 </div>
             </motion.div>
-        </section>
+        </section >
     );
 }

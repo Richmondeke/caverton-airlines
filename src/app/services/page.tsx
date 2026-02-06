@@ -118,10 +118,10 @@ const comparisonData = [
 
 export default function ServicesPage() {
     return (
-        <div className="min-h-screen pt-32 pb-24 bg-navy-900">
+        <div className="min-h-screen pt-32 pb-24 bg-white dark:bg-navy-900 transition-colors duration-500">
             {/* Background */}
-            <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-navy-800 via-navy-900 to-black" />
-            <div className="fixed inset-0 z-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+            <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-100 via-white to-gray-50 dark:from-navy-800 dark:via-navy-900 dark:to-black" />
+            <div className="fixed inset-0 z-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] dark:invert" />
 
             <div className="container mx-auto px-6 relative z-10">
                 {/* Header */}
@@ -134,11 +134,11 @@ export default function ServicesPage() {
                     <span className="inline-block py-1 px-3 rounded-full bg-gold-500/10 text-gold-400 text-xs font-bold tracking-[0.2em] uppercase mb-6 font-body">
                         Our Services
                     </span>
-                    <h1 className="font-display text-4xl md:text-5xl text-white mb-4">
+                    <h1 className="font-display text-4xl md:text-5xl text-navy-900 dark:text-white mb-4">
                         Premium Logistics
-                        <span className="block italic text-white/80">Solutions</span>
+                        <span className="block italic text-navy-900/80 dark:text-white/80">Solutions</span>
                     </h1>
-                    <p className="text-white/60 max-w-2xl mx-auto font-body">
+                    <p className="text-navy-900/60 dark:text-white/60 max-w-2xl mx-auto font-body">
                         From express air freight to specialized cold chain logistics, we offer
                         comprehensive shipping solutions tailored to your needs.
                     </p>

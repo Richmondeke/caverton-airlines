@@ -1,15 +1,55 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+const kabel = localFont({
+  src: "./fonts/kabel.ttf",
+  variable: "--font-kabel",
   display: "swap",
 });
+
+const humanist = localFont({
+  src: "./fonts/Humanist521BT.ttf",
+  variable: "--font-humanist",
+  display: "swap",
+});
+
+// We can remove Inter/Outfit/Manrope since we are using custom fonts now.
+// However, tailwind config might still reference '--font-outfit' etc. 
+// We should align the variable names. 
+// Tailwind config says: 
+// display: ["var(--font-outfit)", "var(--font-inter)", ...]
+// body: ["var(--font-manrope)", "var(--font-inter)", ...]
+
+// Let's use the variable names expected by Tailwind Config OR update Tailwind Config.
+// Updating layout only is safer if we use the same variable names.
+// BUT, 'kabel.ttf' is likely the 'display' font (Kabel) and 'Humanist' is body.
+
+// Let's map Kabel to --font-outfit (display) and Humanist to --font-manrope (body) for minimal config churn, 
+// OR better: use consistent naming and expect to update Tailwind config if needed. 
+// Given the previous tailwind config change, let's just stick to standard descriptive vars and update tailwind config next if needed.
+// Actually, earlier I updated tailwind config to use 'outfit' and 'manrope'. 
+// I will reuse those variable names to avoid breaking the config immediately, 
+// OR I will simply use '--font-display' and '--font-body' and ensure tailwind config uses those.
+
+// Wait, checking tailwind.config.ts content again...
+// fontFamily: {
+//    display: ["var(--font-outfit)", ...],
+//    body: ["var(--font-manrope)", ...]
+// }
+//
+// I will use those variable names for the local fonts to "trick" it, or better yet, I should update the variable names in the replacement to match the INTENT.
+// Actually, the cleanest way is:
+// Define: variable: "--font-kabel" and "--font-humanist"
+// And in the className: `${kabel.variable} ${humanist.variable}`
+// And THEN update tailwind config to use these variables.
+//
+// PROPOSAL: Since I can't update tailwind config in this same tool call (file lock/simplicity),
+// I will modify Layout to use the NEW variables, and I'll do a second edit to tailwind config.
+
 
 export const metadata: Metadata = {
   title: "Cargofly | Caverton Cargo Division - Premium Aviation Logistics",
@@ -56,7 +96,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
+    <html lang="en" className={`${kabel.variable} ${humanist.variable}`}>
       <head>
         {/* Security Headers */}
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
@@ -68,11 +108,13 @@ export default function RootLayout({
         />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
-      <body className="font-body antialiased">
+      <body className="bg-white dark:bg-navy-900 text-navy-900 dark:text-white transition-colors duration-300 font-body antialiased">
         <AuthProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
+          <ThemeProvider>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>

@@ -1,14 +1,19 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --color-navy-800: #1E3A5F;
-  --color-navy-900: #0A0F1E;
-  --color-gold-400: #FBBF24;
-  --color-gold-500: #CA8A04;
+  --color-navy: #003399;
+  --color-navy-800: #002060;
+  --color-navy-900: #003399;
+  /* Main Background */
+  --color-blue-sky: #4196FF;
+  --color-gold-400: #FFD541;
+  --color-gold-500: #FFCA00;
   --color-amber-400: #F59E0B;
 
-  --font-display: var(--font-inter);
-  --font-body: var(--font-inter);
+  --font-display: var(--font-kabel);
+  --font-body: var(--font-humanist);
 
   --animate-fade-slide-up: fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-text-reveal: textReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -109,8 +114,7 @@
 
 @layer base {
   body {
-    background-color: var(--color-navy-900);
-    color: #ffffff;
+    /* Background and color are now handled by classes on the body/main elements or defaults */
     font-family: var(--font-body);
   }
 
@@ -125,13 +129,9 @@
 }
 
 @layer components {
-  .glass-panel {
-    @apply bg-navy-900/40 backdrop-blur-xl border border-white/10 shadow-xl;
-  }
-
-  .glass-card {
-    @apply bg-navy-900/40 backdrop-blur-md border border-white/10;
-  }
+  /* Removed glass utils to avoid @apply issues with custom variants.
+     Use inline classes or generic utils instead.
+  */
 
   .btn-gold {
     @apply bg-gradient-to-r from-gold-500 to-amber-400 text-navy-900 font-bold uppercase tracking-wider hover:shadow-lg transition-all;

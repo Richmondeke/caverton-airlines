@@ -36,10 +36,10 @@ export default function LoginPage() {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center py-24 px-6 bg-navy-900">
+        <div className="min-h-screen flex items-center justify-center py-24 px-6 bg-white dark:bg-navy-900 transition-colors duration-500">
             {/* Background */}
-            <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-navy-800 via-navy-900 to-black" />
-            <div className="fixed inset-0 z-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+            <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-100 via-white to-gray-50 dark:from-navy-800 dark:via-navy-900 dark:to-black" />
+            <div className="fixed inset-0 z-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] dark:invert" />
 
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -53,10 +53,10 @@ export default function LoginPage() {
                             <Package className="w-6 h-6 text-navy-900" />
                         </div>
                         <div className="text-left">
-                            <span className="font-display text-xl font-semibold text-white block">
-                                Cargo<span className="text-gold-400">fly</span>
+                            <span className="font-display text-xl font-semibold text-navy-900 dark:text-white block">
+                                Cargo<span className="text-gold-500 dark:text-gold-400">fly</span>
                             </span>
-                            <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-body">
+                            <span className="text-[10px] uppercase tracking-[0.2em] text-navy-900/40 dark:text-white/40 font-body">
                                 Caverton Cargo
                             </span>
                         </div>
@@ -201,7 +201,18 @@ export default function LoginPage() {
                     <div className="grid grid-cols-1 gap-4">
                         <button
                             type="button"
-                            onClick={signInWithGoogle}
+                            onClick={async () => {
+                                try {
+                                    setIsLoading(true);
+                                    await signInWithGoogle();
+                                    // Redirect to ship/wallet
+                                    window.location.href = "/ship";
+                                } catch (error) {
+                                    console.error("Google Auth Error:", error);
+                                    setError("Failed to sign in with Google.");
+                                    setIsLoading(false);
+                                }
+                            }}
                             className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/20 transition-all font-body"
                         >
                             <svg className="w-5 h-5" viewBox="0 0 24 24">

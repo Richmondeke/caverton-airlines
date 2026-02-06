@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+    darkMode: "class",
     content: [
         "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,24 +11,35 @@ const config: Config = {
         extend: {
             colors: {
                 navy: {
-                    800: "#1E3A5F",
-                    900: "#0A0F1E",
+                    DEFAULT: "#003399", // Official Navy Blue - Used for dark background
+                    900: "#003399",     // Ensure this maps to the main navy color for existing classes
+                    800: "#0044CE",     // Lighter navy
+                    700: "#0055EE",     // Even lighter
+                    light: "#4196FF",   // Sky Blue mapping
+                },
+                blue: {
+                    sky: "#4196FF",     // Official Sky Blue (Tertiary)
+                    light: "#81B7FF",   // Sky Blue 10
+                    dark: "#016FFF",    // Sky Blue 11
                 },
                 gold: {
-                    400: "#FBBF24",
-                    500: "#CA8A04",
+                    DEFAULT: "#FFCA00", // Official Cargofly Yellow
+                    500: "#FFCA00",     // Main Button Color
+                    400: "#FFD541",     // Lighter yellow
+                    600: "#D4A600",     // Darker gold for hover
                 },
-                amber: {
-                    400: "#F59E0B",
+                gray: {
+                    dark: "#666666",    // Official Dark Gray
+                    light: "#CCCCCC",   // Official Light Gray
                 },
                 glass: {
-                    DEFAULT: "rgba(10, 20, 40, 0.4)",
+                    DEFAULT: "rgba(0, 51, 153, 0.4)", // Navy based glass
                     border: "rgba(255, 255, 255, 0.08)",
                 },
             },
             fontFamily: {
-                display: ["var(--font-inter)", "sans-serif"],
-                body: ["var(--font-inter)", "sans-serif"],
+                display: ["var(--font-display)", "sans-serif"], // Mapped to Kabel
+                body: ["var(--font-body)", "sans-serif"],       // Mapped to Humanist
             },
             animation: {
                 "fade-slide-up": "fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
