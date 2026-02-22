@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 export default function TrustSection() {
     return (
-        <section className="bg-transparent py-24">
+        <section className="bg-transparent py-24 border-t border-white/10 mt-12">
             <div className="container mx-auto px-spacing-06">
                 <div className="text-center mb-spacing-10">
                     <motion.h2

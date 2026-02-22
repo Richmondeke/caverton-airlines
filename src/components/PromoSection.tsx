@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export default function PromoSection() {
     return (
-        <section className="relative py-32 bg-transparent">
+        <section className="relative py-32 bg-transparent border-t border-white/10">
             <div className="container mx-auto px-spacing-06">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}

@@ -47,7 +47,7 @@ const slideLeft = {
 
 export default function Hero() {
     return (
-        <section className="relative w-full flex justify-center items-center pt-24 pb-32 bg-transparent">
+        <section className="relative w-full flex justify-center items-center pt-24 pb-40 bg-transparent">
 
             {/* Main Content Frame */}
             <div className="w-full max-w-[1200px] min-h-[700px] flex flex-col justify-center items-center gap-spacing-12 px-spacing-06 relative z-10">
@@ -126,7 +126,7 @@ export default function Hero() {
                     initial="hidden"
                     animate="visible"
                     transition={{ delay: 0.4 }}
-                    className="w-full mt-16 lg:mt-24"
+                    className="w-full mt-24 lg:mt-40 relative z-20"
                 >
                     <HeroWidget />
                 </motion.div>
