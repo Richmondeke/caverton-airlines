@@ -30,7 +30,7 @@ const BLOG_POSTS = [
 
 export default function BlogSection() {
     return (
-        <section className="py-spacing-11 bg-transparent relative z-10">
+        <section className="pt-24 pb-32 bg-transparent relative z-10">
             <div className="container mx-auto px-spacing-06">
                 <div className="flex flex-col mb-spacing-08">
                     <p className="text-white/60 font-body text-sm uppercase tracking-widest mb-2 px-1">Read News</p>

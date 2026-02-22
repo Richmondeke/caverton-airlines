@@ -32,7 +32,7 @@ const ROW2 = [
 
 export default function TagMarquee() {
     return (
-        <div className="w-full py-2 bg-transparent relative z-10 space-y-4">
+        <div className="w-full py-20 bg-transparent relative z-10 space-y-4">
             {/* Row 1 */}
             <div className="flex overflow-hidden">
                 <motion.div
