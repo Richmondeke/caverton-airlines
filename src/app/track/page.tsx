@@ -55,7 +55,7 @@ function TrackPageContent() {
                     // Convert Firestore events to UI events
                     // Firestore returns Descending (Newest First). 
                     // We reverse to show Chronological (Oldest First) to match Timeline flow.
-                    const flowEvents = eventsData.reverse().map((e: unknown) => ({
+                    const flowEvents = eventsData.reverse().map((e: TrackingEvent) => ({
                         id: e.id,
                         status: getStatusDisplay(e.status) || e.status,
                         location: e.location,
@@ -105,7 +105,7 @@ function TrackPageContent() {
         }
     };
 
-    const formatDate = (timestamp: unknown) => {
+    const formatDate = (timestamp: any) => {
         if (!timestamp) return "Pending";
         // Handle Firestore Timestamp or Date
         const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
@@ -208,7 +208,7 @@ function TrackPageContent() {
                                 </h3>
                                 <TrackingTimeline
                                     events={events}
-                                    currentStatus={getStatusDisplay(shipment.status as unknown) || shipment.status}
+                                    currentStatus={getStatusDisplay(shipment.status) || shipment.status}
                                 />
                             </div>
                         </div>
